@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package auth;
+
+option go_package = "src/proto";
+
+service AuthService {
+  rpc Validate(ValidateRequest) returns (ValidateResponse){}
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse){}
+}
+
+message Credential{
+  string accessToken = 1;
+  string refreshToken = 2;
+  int32 expiresIn = 3;
+}
+
+// Validate
+
+message ValidateRequest{
+  string token = 1;
+}
+
+message ValidateResponse{
+  string userId = 1;
+  string role = 2;
+}
+
+// Redeem Refresh Token
+
+message RefreshTokenRequest{
+  string refreshToken = 1;
+}
+
+message RefreshTokenResponse{
+  Credential credential = 1;
+}
