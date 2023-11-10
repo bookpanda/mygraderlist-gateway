@@ -19,8 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	AuthService_Validate_FullMethodName     = "/auth.AuthService/Validate"
-	AuthService_RefreshToken_FullMethodName = "/auth.AuthService/RefreshToken"
+	AuthService_Validate_FullMethodName          = "/auth.AuthService/Validate"
+	AuthService_RefreshToken_FullMethodName      = "/auth.AuthService/RefreshToken"
+	AuthService_GetGoogleLoginUrl_FullMethodName = "/auth.AuthService/GetGoogleLoginUrl"
+	AuthService_VerifyGoogleLogin_FullMethodName = "/auth.AuthService/VerifyGoogleLogin"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -29,6 +31,8 @@ const (
 type AuthServiceClient interface {
 	Validate(ctx context.Context, in *ValidateRequest, opts ...grpc.CallOption) (*ValidateResponse, error)
 	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error)
+	GetGoogleLoginUrl(ctx context.Context, in *GetGoogleLoginUrlRequest, opts ...grpc.CallOption) (*GetGoogleLoginUrlResponse, error)
+	VerifyGoogleLogin(ctx context.Context, in *VerifyGoogleLoginRequest, opts ...grpc.CallOption) (*VerifyGoogleLoginResponse, error)
 }
 
 type authServiceClient struct {
@@ -57,12 +61,32 @@ func (c *authServiceClient) RefreshToken(ctx context.Context, in *RefreshTokenRe
 	return out, nil
 }
 
+func (c *authServiceClient) GetGoogleLoginUrl(ctx context.Context, in *GetGoogleLoginUrlRequest, opts ...grpc.CallOption) (*GetGoogleLoginUrlResponse, error) {
+	out := new(GetGoogleLoginUrlResponse)
+	err := c.cc.Invoke(ctx, AuthService_GetGoogleLoginUrl_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) VerifyGoogleLogin(ctx context.Context, in *VerifyGoogleLoginRequest, opts ...grpc.CallOption) (*VerifyGoogleLoginResponse, error) {
+	out := new(VerifyGoogleLoginResponse)
+	err := c.cc.Invoke(ctx, AuthService_VerifyGoogleLogin_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
 type AuthServiceServer interface {
 	Validate(context.Context, *ValidateRequest) (*ValidateResponse, error)
 	RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenResponse, error)
+	GetGoogleLoginUrl(context.Context, *GetGoogleLoginUrlRequest) (*GetGoogleLoginUrlResponse, error)
+	VerifyGoogleLogin(context.Context, *VerifyGoogleLoginRequest) (*VerifyGoogleLoginResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -75,6 +99,12 @@ func (UnimplementedAuthServiceServer) Validate(context.Context, *ValidateRequest
 }
 func (UnimplementedAuthServiceServer) RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RefreshToken not implemented")
+}
+func (UnimplementedAuthServiceServer) GetGoogleLoginUrl(context.Context, *GetGoogleLoginUrlRequest) (*GetGoogleLoginUrlResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGoogleLoginUrl not implemented")
+}
+func (UnimplementedAuthServiceServer) VerifyGoogleLogin(context.Context, *VerifyGoogleLoginRequest) (*VerifyGoogleLoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyGoogleLogin not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -125,6 +155,42 @@ func _AuthService_RefreshToken_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_GetGoogleLoginUrl_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGoogleLoginUrlRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).GetGoogleLoginUrl(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_GetGoogleLoginUrl_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).GetGoogleLoginUrl(ctx, req.(*GetGoogleLoginUrlRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_VerifyGoogleLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyGoogleLoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).VerifyGoogleLogin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_VerifyGoogleLogin_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).VerifyGoogleLogin(ctx, req.(*VerifyGoogleLoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -139,6 +205,14 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RefreshToken",
 			Handler:    _AuthService_RefreshToken_Handler,
+		},
+		{
+			MethodName: "GetGoogleLoginUrl",
+			Handler:    _AuthService_GetGoogleLoginUrl_Handler,
+		},
+		{
+			MethodName: "VerifyGoogleLogin",
+			Handler:    _AuthService_VerifyGoogleLogin_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
