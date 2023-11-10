@@ -6,6 +6,7 @@ option go_package = "src/proto";
 
 service UserService {
   rpc FindOne(FindOneUserRequest) returns (FindOneUserResponse){}
+  rpc FindByEmail(FindByEmailUserRequest) returns(FindByEmailUserResponse) {}
   rpc Create(CreateUserRequest) returns (CreateUserResponse){}
   rpc Update(UpdateUserRequest) returns (UpdateUserResponse){}
   rpc Verify(VerifyUserRequest) returns (VerifyUserResponse){}
@@ -26,6 +27,16 @@ message FindOneUserRequest{
 }
 
 message FindOneUserResponse{
+  User user = 1;
+}
+
+// FindByEmail
+
+message FindByEmailUserRequest{
+  string email = 1;
+}
+
+message FindByEmailUserResponse{
   User user = 1;
 }
 
