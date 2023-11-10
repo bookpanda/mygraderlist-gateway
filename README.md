@@ -1,1 +1,1 @@
-# MyGraderList-gateway
+# mygraderlist-gateway
