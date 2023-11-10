@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/bookpanda/mygraderlist-gateway/src/app/dto"
-	"github.com/bookpanda/mygraderlist-gateway/src/proto"
+	auth_proto "github.com/bookpanda/mygraderlist-proto/MyGraderList/auth"
 	"github.com/stretchr/testify/mock"
 	"google.golang.org/grpc"
 )
@@ -71,21 +71,21 @@ type ClientMock struct {
 	mock.Mock
 }
 
-func (c *ClientMock) Validate(_ context.Context, in *proto.ValidateRequest, _ ...grpc.CallOption) (res *proto.ValidateResponse, err error) {
+func (c *ClientMock) Validate(_ context.Context, in *auth_proto.ValidateRequest, _ ...grpc.CallOption) (res *auth_proto.ValidateResponse, err error) {
 	args := c.Called(in)
 
 	if args.Get(0) != nil {
-		res = args.Get(0).(*proto.ValidateResponse)
+		res = args.Get(0).(*auth_proto.ValidateResponse)
 	}
 
 	return res, args.Error(1)
 }
 
-func (c *ClientMock) RefreshToken(_ context.Context, in *proto.RefreshTokenRequest, _ ...grpc.CallOption) (res *proto.RefreshTokenResponse, err error) {
+func (c *ClientMock) RefreshToken(_ context.Context, in *auth_proto.RefreshTokenRequest, _ ...grpc.CallOption) (res *auth_proto.RefreshTokenResponse, err error) {
 	args := c.Called(in)
 
 	if args.Get(0) != nil {
-		res = args.Get(0).(*proto.RefreshTokenResponse)
+		res = args.Get(0).(*auth_proto.RefreshTokenResponse)
 	}
 
 	return res, args.Error(1)
@@ -109,11 +109,11 @@ func (s *ServiceMock) Validate(token string) (payload *dto.TokenPayloadAuth, err
 	return payload, err
 }
 
-func (s *ServiceMock) RefreshToken(token string) (credential *proto.Credential, err *dto.ResponseErr) {
+func (s *ServiceMock) RefreshToken(token string) (credential *auth_proto.Credential, err *dto.ResponseErr) {
 	args := s.Called(token)
 
 	if args.Get(0) != nil {
-		credential = args.Get(0).(*proto.Credential)
+		credential = args.Get(0).(*auth_proto.Credential)
 	}
 
 	if args.Get(1) != nil {

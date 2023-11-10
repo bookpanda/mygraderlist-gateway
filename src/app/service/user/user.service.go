@@ -6,27 +6,27 @@ import (
 	"time"
 
 	"github.com/bookpanda/mygraderlist-gateway/src/app/dto"
-	"github.com/bookpanda/mygraderlist-gateway/src/proto"
+	user_proto "github.com/bookpanda/mygraderlist-proto/MyGraderList/backend/user"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 type Service struct {
-	client proto.UserServiceClient
+	client user_proto.UserServiceClient
 }
 
-func NewService(client proto.UserServiceClient) *Service {
+func NewService(client user_proto.UserServiceClient) *Service {
 	return &Service{
 		client: client,
 	}
 }
 
-func (s *Service) FindOne(id string) (result *proto.User, err *dto.ResponseErr) {
+func (s *Service) FindOne(id string) (result *user_proto.User, err *dto.ResponseErr) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	res, errRes := s.client.FindOne(ctx, &proto.FindOneUserRequest{Id: id})
+	res, errRes := s.client.FindOne(ctx, &user_proto.FindOneUserRequest{Id: id})
 	if errRes != nil {
 		st, ok := status.FromError(errRes)
 		if ok {
@@ -69,17 +69,17 @@ func (s *Service) FindOne(id string) (result *proto.User, err *dto.ResponseErr) 
 	return res.User, nil
 }
 
-func (s *Service) Create(in *dto.UserDto) (result *proto.User, err *dto.ResponseErr) {
+func (s *Service) Create(in *dto.UserDto) (result *user_proto.User, err *dto.ResponseErr) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	usrDto := &proto.User{
+	usrDto := &user_proto.User{
 		Username: in.Username,
 		Email:    in.Email,
 		Password: in.Password,
 	}
 
-	res, errRes := s.client.Create(ctx, &proto.CreateUserRequest{User: usrDto})
+	res, errRes := s.client.Create(ctx, &user_proto.CreateUserRequest{User: usrDto})
 	if errRes != nil {
 
 		log.Error().
@@ -98,11 +98,11 @@ func (s *Service) Create(in *dto.UserDto) (result *proto.User, err *dto.Response
 	return res.User, nil
 }
 
-func (s *Service) Update(id string, in *dto.UpdateUserDto) (result *proto.User, err *dto.ResponseErr) {
+func (s *Service) Update(id string, in *dto.UpdateUserDto) (result *user_proto.User, err *dto.ResponseErr) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	usrReq := &proto.UpdateUserRequest{
+	usrReq := &user_proto.UpdateUserRequest{
 		Username: in.Username,
 		Password: in.Password,
 	}
@@ -161,7 +161,7 @@ func (s *Service) Verify(studentId string, verifyType string) (result bool, err 
 		Str("student_id", studentId).
 		Msg("Trying to verify the user")
 
-	res, errRes := s.client.Verify(ctx, &proto.VerifyUserRequest{StudentId: studentId, VerifyType: verifyType})
+	res, errRes := s.client.Verify(ctx, &user_proto.VerifyUserRequest{StudentId: studentId, VerifyType: verifyType})
 	if errRes != nil {
 
 		log.Error().
@@ -193,7 +193,7 @@ func (s *Service) Delete(id string) (result bool, err *dto.ResponseErr) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	res, errRes := s.client.Delete(ctx, &proto.DeleteUserRequest{Id: id})
+	res, errRes := s.client.Delete(ctx, &user_proto.DeleteUserRequest{Id: id})
 	if errRes != nil {
 		st, ok := status.FromError(errRes)
 		if ok {

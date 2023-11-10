@@ -6,7 +6,7 @@ import (
 	"github.com/bookpanda/mygraderlist-gateway/src/app/dto"
 	"github.com/bookpanda/mygraderlist-gateway/src/app/router"
 	"github.com/bookpanda/mygraderlist-gateway/src/app/validator"
-	"github.com/bookpanda/mygraderlist-gateway/src/proto"
+	user_proto "github.com/bookpanda/mygraderlist-proto/MyGraderList/backend/user"
 )
 
 type Handler struct {
@@ -15,9 +15,9 @@ type Handler struct {
 }
 
 type IService interface {
-	FindOne(string) (*proto.User, *dto.ResponseErr)
-	Create(*dto.UserDto) (*proto.User, *dto.ResponseErr)
-	Update(string, *dto.UpdateUserDto) (*proto.User, *dto.ResponseErr)
+	FindOne(string) (*user_proto.User, *dto.ResponseErr)
+	Create(*dto.UserDto) (*user_proto.User, *dto.ResponseErr)
+	Update(string, *dto.UpdateUserDto) (*user_proto.User, *dto.ResponseErr)
 	Delete(string) (bool, *dto.ResponseErr)
 	Verify(string, string) (bool, *dto.ResponseErr)
 }

@@ -6,17 +6,17 @@ import (
 	"time"
 
 	"github.com/bookpanda/mygraderlist-gateway/src/app/dto"
-	"github.com/bookpanda/mygraderlist-gateway/src/proto"
+	auth_proto "github.com/bookpanda/mygraderlist-proto/MyGraderList/auth"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 type Service struct {
-	client proto.AuthServiceClient
+	client auth_proto.AuthServiceClient
 }
 
-func NewService(client proto.AuthServiceClient) *Service {
+func NewService(client auth_proto.AuthServiceClient) *Service {
 	return &Service{
 		client: client,
 	}
@@ -26,7 +26,7 @@ func (s *Service) Validate(token string) (*dto.TokenPayloadAuth, *dto.ResponseEr
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	res, err := s.client.Validate(ctx, &proto.ValidateRequest{Token: token})
+	res, err := s.client.Validate(ctx, &auth_proto.ValidateRequest{Token: token})
 	if err != nil {
 		st, ok := status.FromError(err)
 		if ok {
@@ -71,11 +71,11 @@ func (s *Service) Validate(token string) (*dto.TokenPayloadAuth, *dto.ResponseEr
 	}, nil
 }
 
-func (s *Service) RefreshToken(token string) (*proto.Credential, *dto.ResponseErr) {
+func (s *Service) RefreshToken(token string) (*auth_proto.Credential, *dto.ResponseErr) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	res, err := s.client.RefreshToken(ctx, &proto.RefreshTokenRequest{RefreshToken: token})
+	res, err := s.client.RefreshToken(ctx, &auth_proto.RefreshTokenRequest{RefreshToken: token})
 	if err != nil {
 		st, ok := status.FromError(err)
 		if ok {

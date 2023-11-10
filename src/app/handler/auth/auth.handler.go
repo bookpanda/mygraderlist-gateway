@@ -6,7 +6,8 @@ import (
 	"github.com/bookpanda/mygraderlist-gateway/src/app/dto"
 	"github.com/bookpanda/mygraderlist-gateway/src/app/router"
 	"github.com/bookpanda/mygraderlist-gateway/src/app/validator"
-	"github.com/bookpanda/mygraderlist-gateway/src/proto"
+	auth_proto "github.com/bookpanda/mygraderlist-proto/MyGraderList/auth"
+	user_proto "github.com/bookpanda/mygraderlist-proto/MyGraderList/backend/user"
 )
 
 type Handler struct {
@@ -19,11 +20,11 @@ type IService interface {
 	// Signup(req *dto.Signup) (*token.TokenPair, *dto.ResponseErr)
 	// Signin(req *dto.Signin) (*token.TokenPair, *dto.ResponseErr)
 	Validate(string) (*dto.TokenPayloadAuth, *dto.ResponseErr)
-	RefreshToken(string) (*proto.Credential, *dto.ResponseErr)
+	RefreshToken(string) (*auth_proto.Credential, *dto.ResponseErr)
 }
 
 type IUserService interface {
-	FindOne(string) (*proto.User, *dto.ResponseErr)
+	FindOne(string) (*user_proto.User, *dto.ResponseErr)
 }
 
 func NewHandler(service IService, usrService IUserService, validate *validator.DtoValidator) *Handler {
