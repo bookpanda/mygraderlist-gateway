@@ -3,6 +3,7 @@ module github.com/bookpanda/mygraderlist-gateway
 go 1.21.0
 
 require (
+	github.com/bookpanda/mygraderlist-proto v0.0.2
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-playground/locales v0.14.1
 	github.com/go-playground/universal-translator v0.18.1
@@ -11,11 +12,9 @@ require (
 	github.com/rs/zerolog v1.31.0
 	github.com/stretchr/testify v1.8.3
 	google.golang.org/grpc v1.59.0
-	google.golang.org/protobuf v1.31.0
 )
 
 require (
-	github.com/bookpanda/mygraderlist-proto v0.0.2 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -41,5 +40,6 @@ require (
 	golang.org/x/sys v0.12.0 // indirect
 	golang.org/x/text v0.12.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230822172742-b8732ec3820d // indirect
+	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
