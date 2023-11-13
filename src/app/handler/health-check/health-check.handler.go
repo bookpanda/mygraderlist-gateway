@@ -2,20 +2,18 @@ package health_check
 
 import (
 	"net/http"
+
+	"github.com/bookpanda/mygraderlist-gateway/src/app/router"
 )
 
 type Handler struct {
-}
-
-type IContext interface {
-	JSON(statusCode int, v interface{})
 }
 
 func NewHandler() *Handler {
 	return &Handler{}
 }
 
-func (h *Handler) HealthCheck(c IContext) {
+func (h *Handler) HealthCheck(c *router.GinCtx) {
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"Health": "大丈夫",
 	})

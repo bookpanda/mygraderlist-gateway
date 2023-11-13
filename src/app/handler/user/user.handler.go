@@ -74,7 +74,7 @@ func (h *Handler) Create(c *router.GinCtx) {
 	return
 }
 
-func (h *Handler) Update(c router.GinCtx) {
+func (h *Handler) Update(c *router.GinCtx) {
 	usrId := c.UserID()
 
 	usrDto := dto.UpdateUserDto{}
@@ -95,7 +95,7 @@ func (h *Handler) Update(c router.GinCtx) {
 	return
 }
 
-func (h *Handler) Delete(c router.GinCtx) {
+func (h *Handler) Delete(c *router.GinCtx) {
 	id, err := c.ID()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &dto.ResponseErr{
