@@ -5,6 +5,7 @@ import (
 
 	"github.com/bookpanda/mygraderlist-gateway/src/app/dto"
 	"github.com/bookpanda/mygraderlist-gateway/src/app/handler/auth"
+	"github.com/bookpanda/mygraderlist-gateway/src/app/router"
 	"github.com/bookpanda/mygraderlist-gateway/src/app/utils"
 	"github.com/bookpanda/mygraderlist-gateway/src/config"
 )
@@ -16,15 +17,6 @@ type Guard struct {
 	isValidate bool
 }
 
-type IContext interface {
-	Token() string
-	Method() string
-	Path() string
-	StoreValue(string, string)
-	JSON(int, interface{})
-	Next()
-}
-
 func NewAuthGuard(s auth.IService, e map[string]struct{}, conf config.App) Guard {
 	return Guard{
 		service:    s,
@@ -34,7 +26,7 @@ func NewAuthGuard(s auth.IService, e map[string]struct{}, conf config.App) Guard
 	}
 }
 
-func (m *Guard) Use(ctx IContext) {
+func (m *Guard) Use(ctx *router.GinCtx) {
 	m.isValidate = true
 
 	m.Validate(ctx)
@@ -47,7 +39,7 @@ func (m *Guard) Use(ctx IContext) {
 
 }
 
-func (m *Guard) Validate(ctx IContext) {
+func (m *Guard) Validate(ctx *router.GinCtx) {
 	method := ctx.Method()
 	path := ctx.Path()
 

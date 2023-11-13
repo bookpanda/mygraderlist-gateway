@@ -36,6 +36,14 @@ func (c *GinCtx) Token() string {
 	return c.GetHeader("Authorization")
 }
 
+func (c *GinCtx) Method() string {
+	return c.Method()
+}
+
+func (c *GinCtx) Path() string {
+	return c.Path()
+}
+
 func (c *GinCtx) Params(key string) (value string, err error) {
 	value = c.Param(key)
 
