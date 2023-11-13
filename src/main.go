@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 
@@ -135,25 +136,76 @@ func main() {
 		}
 	}()
 
-	// Wait for interrupt signal to gracefully shutdown the server with
-	// a timeout of 5 seconds.
-	quit := make(chan os.Signal)
-	// kill (no param) default send syscanll.SIGTERM
-	// kill -2 is syscall.SIGINT
-	// kill -9 is syscall. SIGKILL but can"t be catch, so don't need add it
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
-	_log.Println("Shutdown Server ...")
+	go func() {
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatal().
+				Err(err).
+				Str("service", "mgl-gateway").
+				Msg("Server not close properly")
+		}
+	}()
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	if err := srv.Shutdown(ctx); err != nil {
-		_log.Fatal("Server Shutdown:", err)
-	}
-	// catching ctx.Done(). timeout of 5 seconds.
-	select {
-	case <-ctx.Done():
-		_log.Println("timeout of 5 seconds.")
-	}
-	_log.Println("Server exiting")
+	wait := gracefulShutdown(context.Background(), 2*time.Second, map[string]operation{
+		"server": func(ctx context.Context) error {
+			return srv.Shutdown(ctx)
+		},
+	})
+
+	<-wait
+}
+
+type operation func(ctx context.Context) error
+
+func gracefulShutdown(ctx context.Context, timeout time.Duration, ops map[string]operation) <-chan struct{} {
+	wait := make(chan struct{})
+	go func() {
+		s := make(chan os.Signal, 1)
+
+		signal.Notify(s, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
+		sig := <-s
+
+		log.Info().
+			Str("service", "graceful shutdown").
+			Msgf("got signal \"%v\" shutting down service", sig)
+
+		timeoutFunc := time.AfterFunc(timeout, func() {
+			log.Error().
+				Str("service", "graceful shutdown").
+				Msgf("timeout %v ms has been elapsed, force exit", timeout.Milliseconds())
+			os.Exit(0)
+		})
+
+		defer timeoutFunc.Stop()
+
+		var wg sync.WaitGroup
+
+		for key, op := range ops {
+			wg.Add(1)
+			innerOp := op
+			innerKey := key
+			go func() {
+				defer wg.Done()
+
+				log.Info().
+					Str("service", "graceful shutdown").
+					Msgf("cleaning up: %v", innerKey)
+				if err := innerOp(ctx); err != nil {
+					log.Error().
+						Str("service", "graceful shutdown").
+						Err(err).
+						Msgf("%v: clean up failed: %v", innerKey, err.Error())
+					return
+				}
+
+				log.Info().
+					Str("service", "graceful shutdown").
+					Msgf("%v was shutdown gracefully", innerKey)
+			}()
+		}
+
+		wg.Wait()
+		close(wait)
+	}()
+
+	return wait
 }
