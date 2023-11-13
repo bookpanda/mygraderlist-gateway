@@ -22,13 +22,13 @@ func NewService(client proto.LikeServiceClient) *Service {
 	}
 }
 
-func (s *Service) FindByUserId(userId string) (result []*proto.Like, err *dto.ResponseErr) {
+func (s *Service) FindByUserId(userId string) ([]*proto.Like, *dto.ResponseErr) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	res, errRes := s.client.FindByUserId(ctx, &proto.FindByUserIdLikeRequest{UserId: userId})
-	if errRes != nil {
-		st, ok := status.FromError(errRes)
+	res, err := s.client.FindByUserId(ctx, &proto.FindByUserIdLikeRequest{UserId: userId})
+	if err != nil {
+		st, ok := status.FromError(err)
 		if ok {
 			switch st.Code() {
 			case codes.NotFound:
@@ -39,7 +39,7 @@ func (s *Service) FindByUserId(userId string) (result []*proto.Like, err *dto.Re
 				}
 			default:
 				log.Error().
-					Err(errRes).
+					Err(err).
 					Str("service", "like").
 					Str("module", "find by user id").
 					Msg("Error while connecting to service")
@@ -53,7 +53,7 @@ func (s *Service) FindByUserId(userId string) (result []*proto.Like, err *dto.Re
 		}
 
 		log.Error().
-			Err(errRes).
+			Err(err).
 			Str("service", "like").
 			Str("module", "find by user id").
 			Msg("Error while connecting to service")
@@ -68,7 +68,7 @@ func (s *Service) FindByUserId(userId string) (result []*proto.Like, err *dto.Re
 	return res.Likes, nil
 }
 
-func (s *Service) Create(in *dto.LikeDto) (result *proto.Like, err *dto.ResponseErr) {
+func (s *Service) Create(in *dto.LikeDto) (*proto.Like, *dto.ResponseErr) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -77,10 +77,10 @@ func (s *Service) Create(in *dto.LikeDto) (result *proto.Like, err *dto.Response
 		UserId:    in.UserID.String(),
 	}
 
-	res, errRes := s.client.Create(ctx, &proto.CreateLikeRequest{Like: likeDto})
-	if errRes != nil {
+	res, err := s.client.Create(ctx, &proto.CreateLikeRequest{Like: likeDto})
+	if err != nil {
 		log.Error().
-			Err(errRes).
+			Err(err).
 			Str("service", "like").
 			Str("module", "create").
 			Msg("Error while connecting to service")
@@ -95,13 +95,13 @@ func (s *Service) Create(in *dto.LikeDto) (result *proto.Like, err *dto.Response
 	return res.Like, nil
 }
 
-func (s *Service) Delete(id string) (result bool, err *dto.ResponseErr) {
+func (s *Service) Delete(id string) (bool, *dto.ResponseErr) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	res, errRes := s.client.Delete(ctx, &proto.DeleteLikeRequest{Id: id})
-	if errRes != nil {
-		st, ok := status.FromError(errRes)
+	res, err := s.client.Delete(ctx, &proto.DeleteLikeRequest{Id: id})
+	if err != nil {
+		st, ok := status.FromError(err)
 		if ok {
 			switch st.Code() {
 			case codes.NotFound:
@@ -113,7 +113,7 @@ func (s *Service) Delete(id string) (result bool, err *dto.ResponseErr) {
 			default:
 
 				log.Error().
-					Err(errRes).
+					Err(err).
 					Str("service", "like").
 					Str("module", "delete").
 					Msg("Error while connecting to service")
@@ -127,7 +127,7 @@ func (s *Service) Delete(id string) (result bool, err *dto.ResponseErr) {
 		}
 
 		log.Error().
-			Err(errRes).
+			Err(err).
 			Str("service", "like").
 			Str("module", "delete").
 			Msg("Error while connecting to service")

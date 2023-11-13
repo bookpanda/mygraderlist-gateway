@@ -15,6 +15,7 @@ type Handler struct {
 }
 
 type IService interface {
+	FindAll() ([]*proto.Emoji, *dto.ResponseErr)
 	FindByUserId(string) ([]*proto.Emoji, *dto.ResponseErr)
 	Create(*dto.EmojiDto) (*proto.Emoji, *dto.ResponseErr)
 	Delete(string) (bool, *dto.ResponseErr)
@@ -24,12 +25,22 @@ func NewHandler(service IService, validate *validator.DtoValidator) *Handler {
 	return &Handler{service, validate}
 }
 
+func (h *Handler) FindAll(c *router.GinCtx) {
+	result, err := h.service.FindAll()
+	if err != nil {
+		c.JSON(err.StatusCode, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
+}
+
 func (h *Handler) FindByUserId(c *router.GinCtx) {
 	userId := c.UserID()
 
-	result, errRes := h.service.FindByUserId(userId)
-	if errRes != nil {
-		c.JSON(errRes.StatusCode, errRes)
+	result, err := h.service.FindByUserId(userId)
+	if err != nil {
+		c.JSON(err.StatusCode, err)
 		return
 	}
 

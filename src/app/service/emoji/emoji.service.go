@@ -22,13 +22,33 @@ func NewService(client proto.EmojiServiceClient) *Service {
 	}
 }
 
-func (s *Service) FindByUserId(userId string) (result []*proto.Emoji, err *dto.ResponseErr) {
+func (s *Service) FindAll() ([]*proto.Emoji, *dto.ResponseErr) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	res, errRes := s.client.FindByUserId(ctx, &proto.FindByUserIdEmojiRequest{UserId: userId})
-	if errRes != nil {
-		st, ok := status.FromError(errRes)
+	res, err := s.client.FindAll(ctx, &proto.FindAllEmojiRequest{})
+	if err != nil {
+		log.Error().Err(err).
+			Str("service", "emoji").
+			Str("module", "find all").
+			Msg("Error while find all emoji")
+
+		return nil, &dto.ResponseErr{
+			StatusCode: http.StatusServiceUnavailable,
+			Message:    "Service is down",
+		}
+	}
+
+	return res.Emojis, nil
+}
+
+func (s *Service) FindByUserId(userId string) ([]*proto.Emoji, *dto.ResponseErr) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	res, err := s.client.FindByUserId(ctx, &proto.FindByUserIdEmojiRequest{UserId: userId})
+	if err != nil {
+		st, ok := status.FromError(err)
 		if ok {
 			switch st.Code() {
 			case codes.NotFound:
@@ -39,7 +59,7 @@ func (s *Service) FindByUserId(userId string) (result []*proto.Emoji, err *dto.R
 				}
 			default:
 				log.Error().
-					Err(errRes).
+					Err(err).
 					Str("service", "emoji").
 					Str("module", "find by user id").
 					Msg("Error while connecting to service")
@@ -53,7 +73,7 @@ func (s *Service) FindByUserId(userId string) (result []*proto.Emoji, err *dto.R
 		}
 
 		log.Error().
-			Err(errRes).
+			Err(err).
 			Str("service", "emoji").
 			Str("module", "find by user id").
 			Msg("Error while connecting to service")
@@ -68,7 +88,7 @@ func (s *Service) FindByUserId(userId string) (result []*proto.Emoji, err *dto.R
 	return res.Emojis, nil
 }
 
-func (s *Service) Create(in *dto.EmojiDto) (result *proto.Emoji, err *dto.ResponseErr) {
+func (s *Service) Create(in *dto.EmojiDto) (*proto.Emoji, *dto.ResponseErr) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -77,10 +97,10 @@ func (s *Service) Create(in *dto.EmojiDto) (result *proto.Emoji, err *dto.Respon
 		UserId:    in.UserID.String(),
 	}
 
-	res, errRes := s.client.Create(ctx, &proto.CreateEmojiRequest{Emoji: EmojiDto})
-	if errRes != nil {
+	res, err := s.client.Create(ctx, &proto.CreateEmojiRequest{Emoji: EmojiDto})
+	if err != nil {
 		log.Error().
-			Err(errRes).
+			Err(err).
 			Str("service", "emoji").
 			Str("module", "create").
 			Msg("Error while connecting to service")
@@ -95,13 +115,13 @@ func (s *Service) Create(in *dto.EmojiDto) (result *proto.Emoji, err *dto.Respon
 	return res.Emoji, nil
 }
 
-func (s *Service) Delete(id string) (result bool, err *dto.ResponseErr) {
+func (s *Service) Delete(id string) (bool, *dto.ResponseErr) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	res, errRes := s.client.Delete(ctx, &proto.DeleteEmojiRequest{Id: id})
-	if errRes != nil {
-		st, ok := status.FromError(errRes)
+	res, err := s.client.Delete(ctx, &proto.DeleteEmojiRequest{Id: id})
+	if err != nil {
+		st, ok := status.FromError(err)
 		if ok {
 			switch st.Code() {
 			case codes.NotFound:
@@ -113,7 +133,7 @@ func (s *Service) Delete(id string) (result bool, err *dto.ResponseErr) {
 			default:
 
 				log.Error().
-					Err(errRes).
+					Err(err).
 					Str("service", "emoji").
 					Str("module", "delete").
 					Msg("Error while connecting to service")
@@ -127,7 +147,7 @@ func (s *Service) Delete(id string) (result bool, err *dto.ResponseErr) {
 		}
 
 		log.Error().
-			Err(errRes).
+			Err(err).
 			Str("service", "emoji").
 			Str("module", "delete").
 			Msg("Error while connecting to service")
