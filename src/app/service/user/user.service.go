@@ -150,45 +150,6 @@ func (s *Service) Update(id string, in *dto.UpdateUserDto) (result *user_proto.U
 	return res.User, nil
 }
 
-func (s *Service) Verify(studentId string, verifyType string) (result bool, err *dto.ResponseErr) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	log.Info().
-		Str("service", "user").
-		Str("module", "verify").
-		Str("type", verifyType).
-		Str("student_id", studentId).
-		Msg("Trying to verify the user")
-
-	res, errRes := s.client.Verify(ctx, &user_proto.VerifyUserRequest{StudentId: studentId, VerifyType: verifyType})
-	if errRes != nil {
-
-		log.Error().
-			Err(errRes).
-			Str("service", "user").
-			Str("module", "verify").
-			Str("type", verifyType).
-			Str("student_id", studentId).
-			Msg("Error while verifying")
-
-		return false, &dto.ResponseErr{
-			StatusCode: http.StatusNotFound,
-			Message:    "User not found",
-			Data:       nil,
-		}
-	}
-
-	log.Info().
-		Str("service", "user").
-		Str("module", "verify").
-		Str("type", verifyType).
-		Str("student_id", studentId).
-		Msg("Verified the user")
-
-	return res.Success, nil
-}
-
 func (s *Service) Delete(id string) (result bool, err *dto.ResponseErr) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
