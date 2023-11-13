@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/bookpanda/mygraderlist-gateway/src/config"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,7 +14,11 @@ type GinRouter struct {
 	rating *gin.RouterGroup
 }
 
-func NewGinRouter() *GinRouter {
+type IGuard interface {
+	Use(*GinCtx)
+}
+
+func NewGinRouter(authGuard IGuard, conf config.App) *GinRouter {
 	r := gin.Default()
 
 	user := r.Group("/user")
