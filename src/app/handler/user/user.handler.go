@@ -19,7 +19,6 @@ type IService interface {
 	Create(*dto.UserDto) (*user_proto.User, *dto.ResponseErr)
 	Update(string, *dto.UpdateUserDto) (*user_proto.User, *dto.ResponseErr)
 	Delete(string) (bool, *dto.ResponseErr)
-	Verify(string, string) (bool, *dto.ResponseErr)
 }
 
 func NewHandler(service IService, validate *validator.DtoValidator) *Handler {
