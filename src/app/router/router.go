@@ -6,8 +6,11 @@ import (
 
 type GinRouter struct {
 	*gin.Engine
-	user *gin.RouterGroup
-	auth *gin.RouterGroup
+	user   *gin.RouterGroup
+	auth   *gin.RouterGroup
+	like   *gin.RouterGroup
+	emoji  *gin.RouterGroup
+	rating *gin.RouterGroup
 }
 
 func NewGinRouter() *GinRouter {
@@ -17,5 +20,9 @@ func NewGinRouter() *GinRouter {
 	// user.Use(middleware.AuthMiddleware())
 	auth := r.Group("/auth")
 
-	return &GinRouter{r, user, auth}
+	like := r.Group("/like")
+	emoji := r.Group("/emoji")
+	rating := r.Group("/rating")
+
+	return &GinRouter{r, user, auth, like, emoji, rating}
 }
