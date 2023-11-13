@@ -3,7 +3,7 @@ module github.com/bookpanda/mygraderlist-gateway
 go 1.21.0
 
 require (
-	github.com/bookpanda/mygraderlist-proto v0.0.2
+	github.com/bookpanda/mygraderlist-proto v0.1.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-playground/locales v0.14.1
 	github.com/go-playground/universal-translator v0.18.1

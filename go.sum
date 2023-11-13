@@ -1,5 +1,17 @@
 github.com/bookpanda/mygraderlist-proto v0.0.2 h1:LQkch/hnRGOF7d/jwvW9dlgr38B7a05/saieZj4s2bM=
 github.com/bookpanda/mygraderlist-proto v0.0.2/go.mod h1:3+LxMLRw7Z2KI+0FekE8DfFcVzSauDCuGaUFfqPiuDQ=
+github.com/bookpanda/mygraderlist-proto v0.0.3 h1:yy4EOUiU5ilnulb+hfujkH9/TcO657uWIwH/ht+vpZk=
+github.com/bookpanda/mygraderlist-proto v0.0.3/go.mod h1:3+LxMLRw7Z2KI+0FekE8DfFcVzSauDCuGaUFfqPiuDQ=
+github.com/bookpanda/mygraderlist-proto v0.0.4 h1:RdrexOZqbUyubyRSupHxBKsU9OuHq0/E+PgUnHWw6zA=
+github.com/bookpanda/mygraderlist-proto v0.0.4/go.mod h1:3+LxMLRw7Z2KI+0FekE8DfFcVzSauDCuGaUFfqPiuDQ=
+github.com/bookpanda/mygraderlist-proto v0.0.6 h1:3kPx/HrBN3nV43u6QfKWazs7mQe+ImRWe63XEwY6s1c=
+github.com/bookpanda/mygraderlist-proto v0.0.6/go.mod h1:3+LxMLRw7Z2KI+0FekE8DfFcVzSauDCuGaUFfqPiuDQ=
+github.com/bookpanda/mygraderlist-proto v0.0.8 h1:RfFzoU3R+3R6mJ1wQLnEaEDMa3aMLQjIA2i/2f4Fcvo=
+github.com/bookpanda/mygraderlist-proto v0.0.8/go.mod h1:3+LxMLRw7Z2KI+0FekE8DfFcVzSauDCuGaUFfqPiuDQ=
+github.com/bookpanda/mygraderlist-proto v0.1.0 h1:HiAUMf6VyYg2/D7NJAgWcYgIBcrHJj72/o4xVB/CXhE=
+github.com/bookpanda/mygraderlist-proto v0.1.0/go.mod h1:3+LxMLRw7Z2KI+0FekE8DfFcVzSauDCuGaUFfqPiuDQ=
+github.com/bookpanda/mygraderlist-proto v0.1.1 h1:AeHrVBft+vuL9x3u/4XJ1uIxE3rnd7NV7sXC7kSqKeY=
+github.com/bookpanda/mygraderlist-proto v0.1.1/go.mod h1:3+LxMLRw7Z2KI+0FekE8DfFcVzSauDCuGaUFfqPiuDQ=
 github.com/bytedance/sonic v1.5.0/go.mod h1:ED5hyg4y6t3/9Ku1R6dU/4KyJ48DZ4jPhfY1O2AihPM=
 github.com/bytedance/sonic v1.9.1 h1:6iJ6NqdoxCDr6mbY8h18oSO+cShGSMRGCEo7F2h0x8s=
 github.com/bytedance/sonic v1.9.1/go.mod h1:i736AoUSYt75HyZLoJW9ERYxcy6eaN6h4BZXU064P/U=
