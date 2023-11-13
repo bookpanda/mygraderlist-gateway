@@ -1,4 +1,4 @@
-package like
+package emoji
 
 import (
 	"net/http"
@@ -6,7 +6,7 @@ import (
 	"github.com/bookpanda/mygraderlist-gateway/src/app/dto"
 	"github.com/bookpanda/mygraderlist-gateway/src/app/router"
 	"github.com/bookpanda/mygraderlist-gateway/src/app/validator"
-	proto "github.com/bookpanda/mygraderlist-proto/MyGraderList/backend/like"
+	proto "github.com/bookpanda/mygraderlist-proto/MyGraderList/backend/emoji"
 )
 
 type Handler struct {
@@ -15,8 +15,8 @@ type Handler struct {
 }
 
 type IService interface {
-	FindByUserId(string) ([]*proto.Like, *dto.ResponseErr)
-	Create(*dto.LikeDto) (*proto.Like, *dto.ResponseErr)
+	FindByUserId(string) ([]*proto.Emoji, *dto.ResponseErr)
+	Create(*dto.EmojiDto) (*proto.Emoji, *dto.ResponseErr)
 	Delete(string) (bool, *dto.ResponseErr)
 }
 
@@ -37,15 +37,15 @@ func (h *Handler) FindByUserId(c *router.GinCtx) {
 }
 
 func (h *Handler) Create(c *router.GinCtx) {
-	likeDto := dto.LikeDto{}
+	emojiDto := dto.EmojiDto{}
 
-	err := c.Bind(&likeDto)
+	err := c.Bind(&emojiDto)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err)
 		return
 	}
 
-	if errors := h.validate.Validate(likeDto); errors != nil {
+	if errors := h.validate.Validate(emojiDto); errors != nil {
 		c.JSON(http.StatusBadRequest, &dto.ResponseErr{
 			StatusCode: http.StatusBadRequest,
 			Message:    "Invalid body request",
@@ -54,13 +54,13 @@ func (h *Handler) Create(c *router.GinCtx) {
 		return
 	}
 
-	like, errRes := h.service.Create(&likeDto)
+	emoji, errRes := h.service.Create(&emojiDto)
 	if errRes != nil {
 		c.JSON(errRes.StatusCode, errRes)
 		return
 	}
 
-	c.JSON(http.StatusCreated, like)
+	c.JSON(http.StatusCreated, emoji)
 	return
 }
 
