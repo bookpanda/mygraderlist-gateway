@@ -2,8 +2,12 @@ version: "3.9"
 
 services:
   local-backend:
-    image: ghcr.io/bookpanda/mygraderlist-backend:dev
+    image: ghcr.io/bookpanda/mygraderlist-backend
+    platform: linux/amd64
     container_name: backend
+    depends_on:
+      - local-db
+      - local-cache
     restart: unless-stopped
     networks:
       - mgl-local
@@ -12,6 +16,22 @@ services:
       - ./service/local/backend:/app/config
     ports:
       - "3001:3001"
+
+  local-auth:
+    image: ghcr.io/bookpanda/mygraderlist-auth
+    platform: linux/amd64
+    container_name: auth
+    depends_on:
+      - local-db
+      - local-cache
+    restart: unless-stopped
+    networks:
+      - mgl-local
+      - database
+    volumes:
+      - ./service/local/auth:/app/config
+    ports:
+      - "3002:3002"
 
   local-db:
     image: mysql:8.0.28-oracle
@@ -23,12 +43,12 @@ services:
     networks:
       - database
     volumes:
-      - ./volumes/mysql:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
     ports:
       - "3306:3306"
 
   local-cache:
-    image: bitnami/redis:6.2.6
+    image: redis:alpine
     container_name: local-cache
     restart: unless-stopped
     environment:
@@ -41,7 +61,10 @@ services:
 
 
 networks:
-  rnkm-local:
+  mgl-local:
     name: mgl-local
   database:
     name: database
+
+volumes:
+  mysql_data:
