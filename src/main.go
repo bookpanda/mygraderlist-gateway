@@ -10,8 +10,6 @@ import (
 	"syscall"
 	"time"
 
-	_log "log"
-
 	athHdr "github.com/bookpanda/mygraderlist-gateway/src/app/handler/auth"
 	crsHdr "github.com/bookpanda/mygraderlist-gateway/src/app/handler/course"
 	emjHdr "github.com/bookpanda/mygraderlist-gateway/src/app/handler/emoji"
@@ -146,13 +144,6 @@ func main() {
 		Addr:    fmt.Sprintf(":%v", conf.App.Port),
 		Handler: r,
 	}
-
-	go func() {
-		// service connections
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			_log.Fatalf("listen: %s\n", err)
-		}
-	}()
 
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {

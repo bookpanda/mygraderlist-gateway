@@ -37,11 +37,11 @@ func (c *GinCtx) Token() string {
 }
 
 func (c *GinCtx) Method() string {
-	return c.Method()
+	return c.Request.Method
 }
 
 func (c *GinCtx) Path() string {
-	return c.Path()
+	return c.Request.URL.Path
 }
 
 func (c *GinCtx) Params(key string) (value string, err error) {
