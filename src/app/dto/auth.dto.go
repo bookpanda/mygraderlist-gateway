@@ -12,6 +12,10 @@ type RedeemNewToken struct {
 	RefreshToken string `json:"refresh_token" validate:"required"`
 }
 
+type VerifyGoogle struct {
+	Code string `json:"code" validate:"required"`
+}
+
 type Signup struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required,gte=6,lte=30"`

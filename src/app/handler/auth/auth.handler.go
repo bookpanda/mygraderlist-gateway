@@ -17,10 +17,10 @@ type Handler struct {
 }
 
 type IService interface {
-	// Signup(req *dto.Signup) (*token.TokenPair, *dto.ResponseErr)
-	// Signin(req *dto.Signin) (*token.TokenPair, *dto.ResponseErr)
 	Validate(string) (*dto.TokenPayloadAuth, *dto.ResponseErr)
 	RefreshToken(string) (*auth_proto.Credential, *dto.ResponseErr)
+	GetGoogleLoginUrl() (string, *dto.ResponseErr)
+	VerifyGoogleLogin(string) (*auth_proto.Credential, *dto.ResponseErr)
 }
 
 type IUserService interface {
@@ -58,7 +58,7 @@ func (h *Handler) RefreshToken(c *router.GinCtx) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, dto.ResponseErr{
 			StatusCode: http.StatusInternalServerError,
-			Message:    "Error while binding the ticket: " + err.Error(),
+			Message:    "Error while binding the token: " + err.Error(),
 			Data:       nil,
 		})
 		return
@@ -73,60 +73,33 @@ func (h *Handler) RefreshToken(c *router.GinCtx) {
 	c.JSON(http.StatusOK, credential)
 }
 
-// func (h *Handler) Signup(ctx *router.GinCtx) {
-// 	signupDto := &dto.Signup{}
+func (h *Handler) GetGoogleLoginUrl(c *router.GinCtx) {
+	url, errRes := h.service.GetGoogleLoginUrl()
+	if errRes != nil {
+		c.JSON(errRes.StatusCode, errRes)
+		return
+	}
 
-// 	err := ctx.Bind(&signupDto)
-// 	if err != nil {
-// 		ctx.JSON(http.StatusBadRequest, err)
-// 		return
-// 	}
+	c.JSON(http.StatusOK, url)
+}
 
-// 	if errors := h.validate.Validate(signupDto); errors != nil {
-// 		ctx.JSON(http.StatusBadRequest, &dto.ResponseErr{
-// 			StatusCode: http.StatusBadRequest,
-// 			Message:    "Invalid request body",
-// 			Data:       errors,
-// 		})
-// 		return
-// 	}
+func (h *Handler) VerifyGoogleLogin(c *router.GinCtx) {
+	code := dto.VerifyGoogle{}
+	err := c.Bind(&code)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, dto.ResponseErr{
+			StatusCode: http.StatusInternalServerError,
+			Message:    "Error while binding the code: " + err.Error(),
+			Data:       nil,
+		})
+		return
+	}
 
-// 	tokens, errRes := h.service.Signup(signupDto)
-// 	if errRes != nil {
-// 		ctx.JSON(errRes.StatusCode, errRes)
-// 		return
-// 	}
+	credential, errRes := h.service.VerifyGoogleLogin(code.Code)
+	if errRes != nil {
+		c.JSON(errRes.StatusCode, errRes)
+		return
+	}
 
-// 	ctx.JSON(http.StatusCreated, gin.H{
-// 		"tokens": tokens,
-// 	})
-// }
-
-// func (h *Handler) Signin(ctx *router.GinCtx) {
-// 	signinDto := &dto.Signin{}
-
-// 	err := ctx.Bind(&signinDto)
-// 	if err != nil {
-// 		ctx.JSON(http.StatusBadRequest, err)
-// 		return
-// 	}
-
-// 	if errors := h.validate.Validate(signinDto); errors != nil {
-// 		ctx.JSON(http.StatusBadRequest, &dto.ResponseErr{
-// 			StatusCode: http.StatusBadRequest,
-// 			Message:    "Invalid request body",
-// 			Data:       errors,
-// 		})
-// 		return
-// 	}
-
-// 	tokens, errRes := h.service.Signin(signinDto)
-// 	if errRes != nil {
-// 		ctx.JSON(errRes.StatusCode, errRes)
-// 		return
-// 	}
-
-// 	ctx.JSON(http.StatusCreated, gin.H{
-// 		"tokens": tokens,
-// 	})
-// }
+	c.JSON(http.StatusOK, credential)
+}
