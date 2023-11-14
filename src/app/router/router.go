@@ -1,7 +1,7 @@
 package router
 
 import (
-	"github.com/bookpanda/mygraderlist-gateway/src/config"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,8 +20,12 @@ type IGuard interface {
 	Use(*GinCtx)
 }
 
-func NewGinRouter(authGuard IGuard, conf config.App) *GinRouter {
+func NewGinRouter(authGuard IGuard) *GinRouter {
 	r := gin.Default()
+
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:3003"}
+	r.Use(cors.New(config))
 
 	user := GroupWithAuthMiddleware(r, "/user", authGuard.Use)
 	auth := GroupWithAuthMiddleware(r, "/auth", authGuard.Use)
