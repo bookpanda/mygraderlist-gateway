@@ -111,8 +111,6 @@ func main() {
 
 	r.GetHealthCheck("/", hc.HealthCheck)
 
-	// r.PostUser("/login", userHdr.FindOne)
-
 	if conf.App.Debug {
 		r.GetUser("/:id", userHdr.FindOne)
 		r.PostUser("/", userHdr.Create)
@@ -121,6 +119,8 @@ func main() {
 
 	r.GetAuth("/me", authHdr.Validate)
 	r.PostAuth("/refreshToken", authHdr.RefreshToken)
+	r.PostAuth("/googleUrl", authHdr.GetGoogleLoginUrl)
+	r.PostAuth("/verifyGoogle", authHdr.VerifyGoogleLogin)
 
 	r.GetCourse("/", courseHdr.FindAll)
 
