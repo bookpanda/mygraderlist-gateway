@@ -31,6 +31,7 @@ func (t *ProblemServiceTest) SetupTest() {
 		Group:      faker.Name(),
 		Code:       faker.Name(),
 		Name:       faker.Name(),
+		Order:      1,
 	}
 
 	Problem2 := &proto.Problem{
@@ -39,6 +40,7 @@ func (t *ProblemServiceTest) SetupTest() {
 		Group:      faker.Name(),
 		Code:       faker.Name(),
 		Name:       faker.Name(),
+		Order:      2,
 	}
 
 	Problem3 := &proto.Problem{
@@ -47,6 +49,7 @@ func (t *ProblemServiceTest) SetupTest() {
 		Group:      faker.Name(),
 		Code:       faker.Name(),
 		Name:       faker.Name(),
+		Order:      3,
 	}
 	t.Problems = make([]*proto.Problem, 0)
 	t.Problems = append(t.Problems, Problem1, Problem2, Problem3)
