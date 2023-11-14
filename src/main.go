@@ -13,24 +13,30 @@ import (
 	_log "log"
 
 	athHdr "github.com/bookpanda/mygraderlist-gateway/src/app/handler/auth"
+	crsHdr "github.com/bookpanda/mygraderlist-gateway/src/app/handler/course"
 	emjHdr "github.com/bookpanda/mygraderlist-gateway/src/app/handler/emoji"
 	health_check "github.com/bookpanda/mygraderlist-gateway/src/app/handler/health-check"
 	lkHdr "github.com/bookpanda/mygraderlist-gateway/src/app/handler/like"
+	prblmHdr "github.com/bookpanda/mygraderlist-gateway/src/app/handler/problem"
 	rtngHdr "github.com/bookpanda/mygraderlist-gateway/src/app/handler/rating"
 	usrHdr "github.com/bookpanda/mygraderlist-gateway/src/app/handler/user"
 	guard "github.com/bookpanda/mygraderlist-gateway/src/app/middleware/auth"
 	"github.com/bookpanda/mygraderlist-gateway/src/app/router"
 	athSrv "github.com/bookpanda/mygraderlist-gateway/src/app/service/auth"
+	crsSrv "github.com/bookpanda/mygraderlist-gateway/src/app/service/course"
 	emjSrv "github.com/bookpanda/mygraderlist-gateway/src/app/service/emoji"
 	lkSrv "github.com/bookpanda/mygraderlist-gateway/src/app/service/like"
+	prblmSrv "github.com/bookpanda/mygraderlist-gateway/src/app/service/problem"
 	rtngSrv "github.com/bookpanda/mygraderlist-gateway/src/app/service/rating"
 	usrSrv "github.com/bookpanda/mygraderlist-gateway/src/app/service/user"
 	"github.com/bookpanda/mygraderlist-gateway/src/app/validator"
 	"github.com/bookpanda/mygraderlist-gateway/src/config"
 	"github.com/bookpanda/mygraderlist-gateway/src/constant/auth"
 	auth_proto "github.com/bookpanda/mygraderlist-proto/MyGraderList/auth"
+	course_proto "github.com/bookpanda/mygraderlist-proto/MyGraderList/backend/course"
 	emoji_proto "github.com/bookpanda/mygraderlist-proto/MyGraderList/backend/emoji"
 	like_proto "github.com/bookpanda/mygraderlist-proto/MyGraderList/backend/like"
+	problem_proto "github.com/bookpanda/mygraderlist-proto/MyGraderList/backend/problem"
 	rating_proto "github.com/bookpanda/mygraderlist-proto/MyGraderList/backend/rating"
 	user_proto "github.com/bookpanda/mygraderlist-proto/MyGraderList/backend/user"
 	"github.com/rs/zerolog/log"
@@ -81,6 +87,14 @@ func main() {
 	authSrv := athSrv.NewService(authClient)
 	authHdr := athHdr.NewHandler(authSrv, userSrv, v)
 
+	courseClient := course_proto.NewCourseServiceClient(backendConn)
+	courseSrv := crsSrv.NewService(courseClient)
+	courseHdr := crsHdr.NewHandler(courseSrv, v)
+
+	problemClient := problem_proto.NewProblemServiceClient(backendConn)
+	problemSrv := prblmSrv.NewService(problemClient)
+	problemHdr := prblmHdr.NewHandler(problemSrv, v)
+
 	likeClient := like_proto.NewLikeServiceClient(backendConn)
 	likeSrv := lkSrv.NewService(likeClient)
 	likeHdr := lkHdr.NewHandler(likeSrv, v)
@@ -109,6 +123,10 @@ func main() {
 
 	r.GetAuth("/me", authHdr.Validate)
 	r.PostAuth("/refreshToken", authHdr.RefreshToken)
+
+	r.GetCourse("/", courseHdr.FindAll)
+
+	r.GetProblem("/", problemHdr.FindAll)
 
 	r.GetLike("/mylikes", likeHdr.FindByUserId)
 	r.PostLike("/", likeHdr.Create)
