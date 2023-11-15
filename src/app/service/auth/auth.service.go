@@ -138,7 +138,7 @@ func (s *Service) GetGoogleLoginUrl() (string, *dto.ResponseErr) {
 				log.Error().
 					Err(err).
 					Str("service", "auth").
-					Str("module", "refresh token").
+					Str("module", "get google login url").
 					Msg("Error while connecting to service")
 
 				return "", &dto.ResponseErr{
@@ -152,7 +152,7 @@ func (s *Service) GetGoogleLoginUrl() (string, *dto.ResponseErr) {
 		log.Error().
 			Err(err).
 			Str("service", "auth").
-			Str("module", "refresh token").
+			Str("module", "get google login url").
 			Msg("Error while connecting to service")
 
 		return "", &dto.ResponseErr{
@@ -185,8 +185,8 @@ func (s *Service) VerifyGoogleLogin(code string) (*auth_proto.Credential, *dto.R
 				log.Error().
 					Err(err).
 					Str("service", "auth").
-					Str("module", "refresh token").
-					Msg("Error while connecting to service")
+					Str("module", "verify google login").
+					Msg("Error while connecting to service, status")
 
 				return nil, &dto.ResponseErr{
 					StatusCode: http.StatusServiceUnavailable,
@@ -199,8 +199,8 @@ func (s *Service) VerifyGoogleLogin(code string) (*auth_proto.Credential, *dto.R
 		log.Error().
 			Err(err).
 			Str("service", "auth").
-			Str("module", "refresh token").
-			Msg("Error while connecting to service")
+			Str("module", "verify google login").
+			Msg("Error while connecting to service, no status")
 
 		return nil, &dto.ResponseErr{
 			StatusCode: http.StatusServiceUnavailable,
