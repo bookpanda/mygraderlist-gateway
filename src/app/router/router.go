@@ -24,7 +24,8 @@ func NewGinRouter(authGuard IGuard) *GinRouter {
 	r := gin.Default()
 
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:3003", "https://mygraderlist.bookpanda.dev"}
+	config.AllowOrigins = []string{"http://localhost:3003"}
+	config.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
 	r.Use(cors.New(config))
 
 	user := GroupWithAuthMiddleware(r, "/user", authGuard.Use)
