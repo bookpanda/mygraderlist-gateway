@@ -1,8 +1,10 @@
 package router
 
 import (
+	"github.com/bookpanda/mygraderlist-gateway/src/config"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 type FiberRouter struct {
@@ -20,13 +22,22 @@ type IGuard interface {
 	Use(*FiberCtx)
 }
 
-func NewFiberRouter(authGuard IGuard) *FiberRouter {
+func NewFiberRouter(authGuard IGuard, conf config.App) *FiberRouter {
 	r := fiber.New(fiber.Config{
 		StrictRouting: true,
 		AppName:       "MyGraderList API",
 	})
 
-	r.Use(cors.New(cors.Config{AllowOrigins: "*"}))
+	r.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+	}))
+
+	if conf.Debug {
+		r.Use(logger.New(logger.Config{Next: func(c *fiber.Ctx) bool {
+			return c.Path() == "/"
+		}}))
+		// r.Get("/docs/*", swagger.HandlerDefault)
+	}
 
 	user := GroupWithAuthMiddleware(r, "/user", authGuard.Use)
 	auth := GroupWithAuthMiddleware(r, "/auth", authGuard.Use)

@@ -107,7 +107,7 @@ func main() {
 
 	authGuard := guard.NewAuthGuard(authSrv, auth.ExcludePath, conf.App)
 
-	r := router.NewFiberRouter(&authGuard)
+	r := router.NewFiberRouter(&authGuard, conf.App)
 
 	r.GetHealthCheck("/", hc.HealthCheck)
 
