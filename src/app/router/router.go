@@ -33,9 +33,10 @@ func NewFiberRouter(authGuard IGuard, conf config.App) *FiberRouter {
 	}))
 
 	if conf.Debug {
-		r.Use(logger.New(logger.Config{Next: func(c *fiber.Ctx) bool {
-			return c.Path() == "/"
-		}}))
+		r.Use(logger.New())
+		// r.Use(logger.New(logger.Config{Next: func(c *fiber.Ctx) bool {
+		// 	return c.Path() == "/"
+		// }}))
 		// r.Get("/docs/*", swagger.HandlerDefault)
 	}
 

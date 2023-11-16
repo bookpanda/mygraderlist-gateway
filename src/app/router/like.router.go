@@ -2,9 +2,11 @@ package router
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/log"
 )
 
 func (r *FiberRouter) GetLike(path string, h func(ctx *FiberCtx)) {
+	log.Debug("hello ", "\n")
 	r.like.Get(path, func(c *fiber.Ctx) error {
 		h(NewFiberCtx(c))
 		return nil
