@@ -1,6 +1,8 @@
 package router
 
 import (
+	"strings"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
@@ -50,7 +52,8 @@ func (c *FiberCtx) Param(key string) (value string, err error) {
 }
 
 func (c *FiberCtx) Token() string {
-	return c.Ctx.Get(fiber.HeaderAuthorization, "")
+	raw := c.Ctx.Get(fiber.HeaderAuthorization, "")
+	return strings.Split(raw, " ")[1]
 }
 
 func (c *FiberCtx) Method() string {
