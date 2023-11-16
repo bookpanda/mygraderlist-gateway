@@ -53,7 +53,12 @@ func (c *FiberCtx) Param(key string) (value string, err error) {
 
 func (c *FiberCtx) Token() string {
 	raw := c.Ctx.Get(fiber.HeaderAuthorization, "")
-	return strings.Split(raw, " ")[1]
+	parts := strings.Split(raw, " ")
+
+	if len(parts) > 1 {
+		return parts[1]
+	}
+	return ""
 }
 
 func (c *FiberCtx) Method() string {
