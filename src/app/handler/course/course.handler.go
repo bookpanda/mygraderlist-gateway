@@ -22,7 +22,7 @@ func NewHandler(service IService, validate *validator.DtoValidator) *Handler {
 	return &Handler{service, validate}
 }
 
-func (h *Handler) FindAll(c *router.GinCtx) {
+func (h *Handler) FindAll(c *router.FiberCtx) {
 	result, err := h.service.FindAll()
 	if err != nil {
 		c.JSON(err.StatusCode, err)

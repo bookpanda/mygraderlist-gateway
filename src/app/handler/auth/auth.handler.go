@@ -31,7 +31,7 @@ func NewHandler(service IService, usrService IUserService, validate *validator.D
 	return &Handler{service, usrService, validate}
 }
 
-func (h *Handler) Validate(c *router.GinCtx) {
+func (h *Handler) Validate(c *router.FiberCtx) {
 	userId := c.UserID()
 
 	usr, err := h.usrService.FindOne(userId)
@@ -51,7 +51,7 @@ func (h *Handler) Validate(c *router.GinCtx) {
 	c.JSON(http.StatusOK, usr)
 }
 
-func (h *Handler) RefreshToken(c *router.GinCtx) {
+func (h *Handler) RefreshToken(c *router.FiberCtx) {
 	refreshToken := dto.RedeemNewToken{}
 
 	err := c.Bind(&refreshToken)
@@ -73,7 +73,7 @@ func (h *Handler) RefreshToken(c *router.GinCtx) {
 	c.JSON(http.StatusOK, credential)
 }
 
-func (h *Handler) GetGoogleLoginUrl(c *router.GinCtx) {
+func (h *Handler) GetGoogleLoginUrl(c *router.FiberCtx) {
 	url, errRes := h.service.GetGoogleLoginUrl()
 	if errRes != nil {
 		c.JSON(errRes.StatusCode, errRes)
@@ -83,7 +83,7 @@ func (h *Handler) GetGoogleLoginUrl(c *router.GinCtx) {
 	c.JSON(http.StatusOK, url)
 }
 
-func (h *Handler) VerifyGoogleLogin(c *router.GinCtx) {
+func (h *Handler) VerifyGoogleLogin(c *router.FiberCtx) {
 	code := dto.VerifyGoogle{}
 	err := c.Bind(&code)
 	if err != nil {

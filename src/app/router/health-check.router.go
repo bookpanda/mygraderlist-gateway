@@ -1,11 +1,12 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 )
 
-func (r *GinRouter) GetHealthCheck(path string, h func(ctx *GinCtx)) {
-	r.GET(path, func(c *gin.Context) {
-		h(NewGinCtx(c))
+func (r *FiberRouter) GetHealthCheck(path string, h func(ctx *FiberCtx)) {
+	r.Get(path, func(c *fiber.Ctx) error {
+		h(NewFiberCtx(c))
+		return nil
 	})
 }

@@ -1,21 +1,31 @@
 package router
 
-import (
-	"github.com/gin-gonic/gin"
-)
+import "github.com/gofiber/fiber/v2"
 
-func (r *GinRouter) GetUser(path string, h func(ctx *GinCtx)) {
-	r.user.GET(path, func(c *gin.Context) { h(NewGinCtx(c)) })
+func (r *FiberRouter) GetUser(path string, h func(ctx *FiberCtx)) {
+	r.user.Get(path, func(c *fiber.Ctx) error {
+		h(NewFiberCtx(c))
+		return nil
+	})
 }
 
-func (r *GinRouter) PostUser(path string, h func(ctx *GinCtx)) {
-	r.user.POST(path, func(c *gin.Context) { h(NewGinCtx(c)) })
+func (r *FiberRouter) PostUser(path string, h func(ctx *FiberCtx)) {
+	r.user.Post(path, func(c *fiber.Ctx) error {
+		h(NewFiberCtx(c))
+		return nil
+	})
 }
 
-func (r *GinRouter) PutUser(path string, h func(ctx *GinCtx)) {
-	r.user.PUT(path, func(c *gin.Context) { h(NewGinCtx(c)) })
+func (r *FiberRouter) PutUser(path string, h func(ctx *FiberCtx)) {
+	r.user.Put(path, func(c *fiber.Ctx) error {
+		h(NewFiberCtx(c))
+		return nil
+	})
 }
 
-func (r *GinRouter) DeleteUser(path string, h func(ctx *GinCtx)) {
-	r.user.DELETE(path, func(c *gin.Context) { h(NewGinCtx(c)) })
+func (r *FiberRouter) DeleteUser(path string, h func(ctx *FiberCtx)) {
+	r.user.Delete(path, func(c *fiber.Ctx) error {
+		h(NewFiberCtx(c))
+		return nil
+	})
 }

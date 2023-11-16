@@ -107,7 +107,7 @@ func main() {
 
 	authGuard := guard.NewAuthGuard(authSrv, auth.ExcludePath, conf.App)
 
-	r := router.NewGinRouter(&authGuard)
+	r := router.NewFiberRouter(&authGuard)
 
 	r.GetHealthCheck("/", hc.HealthCheck)
 
@@ -140,13 +140,8 @@ func main() {
 	r.PostRating("/", ratingHdr.Create)
 	r.DeleteRating("/:id", ratingHdr.Create)
 
-	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%v", conf.App.Port),
-		Handler: r,
-	}
-
 	go func() {
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err := r.Listen(fmt.Sprintf(":%v", conf.App.Port)); err != nil && err != http.ErrServerClosed {
 			log.Fatal().
 				Err(err).
 				Str("service", "mgl-gateway").
@@ -156,7 +151,7 @@ func main() {
 
 	wait := gracefulShutdown(context.Background(), 2*time.Second, map[string]operation{
 		"server": func(ctx context.Context) error {
-			return srv.Shutdown(ctx)
+			return r.Shutdown()
 		},
 	})
 

@@ -1,13 +1,19 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 )
 
-func (r *GinRouter) GetAuth(path string, h func(ctx *GinCtx)) {
-	r.auth.GET(path, func(c *gin.Context) { h(NewGinCtx(c)) })
+func (r *FiberRouter) GetAuth(path string, h func(ctx *FiberCtx)) {
+	r.auth.Get(path, func(c *fiber.Ctx) error {
+		h(NewFiberCtx(c))
+		return nil
+	})
 }
 
-func (r *GinRouter) PostAuth(path string, h func(ctx *GinCtx)) {
-	r.auth.POST(path, func(c *gin.Context) { h(NewGinCtx(c)) })
+func (r *FiberRouter) PostAuth(path string, h func(ctx *FiberCtx)) {
+	r.auth.Post(path, func(c *fiber.Ctx) error {
+		h(NewFiberCtx(c))
+		return nil
+	})
 }

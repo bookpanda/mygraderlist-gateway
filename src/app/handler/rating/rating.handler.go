@@ -26,7 +26,7 @@ func NewHandler(service IService, validate *validator.DtoValidator) *Handler {
 	return &Handler{service, validate}
 }
 
-func (h *Handler) FindAll(c *router.GinCtx) {
+func (h *Handler) FindAll(c *router.FiberCtx) {
 	result, err := h.service.FindAll()
 	if err != nil {
 		c.JSON(err.StatusCode, err)
@@ -36,7 +36,7 @@ func (h *Handler) FindAll(c *router.GinCtx) {
 	c.JSON(http.StatusOK, result)
 }
 
-func (h *Handler) FindByUserId(c *router.GinCtx) {
+func (h *Handler) FindByUserId(c *router.FiberCtx) {
 	userId := c.UserID()
 
 	result, errRes := h.service.FindByUserId(userId)
@@ -48,7 +48,7 @@ func (h *Handler) FindByUserId(c *router.GinCtx) {
 	c.JSON(http.StatusOK, result)
 }
 
-func (h *Handler) Create(c *router.GinCtx) {
+func (h *Handler) Create(c *router.FiberCtx) {
 	ratingDto := dto.RatingDto{}
 
 	err := c.Bind(&ratingDto)
@@ -76,7 +76,7 @@ func (h *Handler) Create(c *router.GinCtx) {
 	return
 }
 
-func (h *Handler) Update(c *router.GinCtx) {
+func (h *Handler) Update(c *router.FiberCtx) {
 	id, err := c.ID()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, dto.ResponseErr{
@@ -104,7 +104,7 @@ func (h *Handler) Update(c *router.GinCtx) {
 	return
 }
 
-func (h *Handler) Delete(c *router.GinCtx) {
+func (h *Handler) Delete(c *router.FiberCtx) {
 	id, err := c.ID()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &dto.ResponseErr{

@@ -24,7 +24,7 @@ func NewHandler(service IService, validate *validator.DtoValidator) *Handler {
 	return &Handler{service, validate}
 }
 
-func (h *Handler) FindByUserId(c *router.GinCtx) {
+func (h *Handler) FindByUserId(c *router.FiberCtx) {
 	userId := c.UserID()
 
 	result, errRes := h.service.FindByUserId(userId)
@@ -36,7 +36,7 @@ func (h *Handler) FindByUserId(c *router.GinCtx) {
 	c.JSON(http.StatusOK, result)
 }
 
-func (h *Handler) Create(c *router.GinCtx) {
+func (h *Handler) Create(c *router.FiberCtx) {
 	likeDto := dto.LikeDto{}
 
 	err := c.Bind(&likeDto)
@@ -64,7 +64,7 @@ func (h *Handler) Create(c *router.GinCtx) {
 	return
 }
 
-func (h *Handler) Delete(c *router.GinCtx) {
+func (h *Handler) Delete(c *router.FiberCtx) {
 	id, err := c.ID()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &dto.ResponseErr{

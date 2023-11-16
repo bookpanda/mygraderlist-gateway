@@ -1,32 +1,32 @@
 package router
 
 import (
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
-type GinRouter struct {
-	*gin.Engine
-	user    *gin.RouterGroup
-	auth    *gin.RouterGroup
-	course  *gin.RouterGroup
-	problem *gin.RouterGroup
-	like    *gin.RouterGroup
-	emoji   *gin.RouterGroup
-	rating  *gin.RouterGroup
+type FiberRouter struct {
+	*fiber.App
+	user    fiber.Router
+	auth    fiber.Router
+	course  fiber.Router
+	problem fiber.Router
+	like    fiber.Router
+	emoji   fiber.Router
+	rating  fiber.Router
 }
 
 type IGuard interface {
-	Use(*GinCtx)
+	Use(*FiberCtx)
 }
 
-func NewGinRouter(authGuard IGuard) *GinRouter {
-	r := gin.Default()
+func NewFiberRouter(authGuard IGuard) *FiberRouter {
+	r := fiber.New(fiber.Config{
+		StrictRouting: true,
+		AppName:       "MyGraderList API",
+	})
 
-	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:3003"}
-	config.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
-	r.Use(cors.New(config))
+	r.Use(cors.New(cors.Config{AllowOrigins: "*"}))
 
 	user := GroupWithAuthMiddleware(r, "/user", authGuard.Use)
 	auth := GroupWithAuthMiddleware(r, "/auth", authGuard.Use)
@@ -36,11 +36,12 @@ func NewGinRouter(authGuard IGuard) *GinRouter {
 	emoji := GroupWithAuthMiddleware(r, "/emoji", authGuard.Use)
 	rating := GroupWithAuthMiddleware(r, "/rating", authGuard.Use)
 
-	return &GinRouter{r, user, auth, course, problem, like, emoji, rating}
+	return &FiberRouter{r, user, auth, course, problem, like, emoji, rating}
 }
 
-func GroupWithAuthMiddleware(r *gin.Engine, path string, middleware func(ctx *GinCtx)) *gin.RouterGroup {
-	return r.Group(path, func(c *gin.Context) {
-		middleware(NewGinCtx(c))
+func GroupWithAuthMiddleware(r *fiber.App, path string, middleware func(ctx *FiberCtx)) fiber.Router {
+	return r.Group(path, func(c *fiber.Ctx) error {
+		middleware(NewFiberCtx(c))
+		return nil
 	})
 }

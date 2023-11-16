@@ -1,9 +1,12 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 )
 
-func (r *GinRouter) GetCourse(path string, h func(ctx *GinCtx)) {
-	r.course.GET(path, func(c *gin.Context) { h(NewGinCtx(c)) })
+func (r *FiberRouter) GetCourse(path string, h func(ctx *FiberCtx)) {
+	r.course.Get(path, func(c *fiber.Ctx) error {
+		h(NewFiberCtx(c))
+		return nil
+	})
 }
