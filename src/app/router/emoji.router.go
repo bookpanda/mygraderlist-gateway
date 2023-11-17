@@ -1,17 +1,26 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 )
 
-func (r *GinRouter) GetEmoji(path string, h func(ctx *GinCtx)) {
-	r.emoji.GET(path, func(c *gin.Context) { h(NewGinCtx(c)) })
+func (r *FiberRouter) GetEmoji(path string, h func(ctx *FiberCtx)) {
+	r.emoji.Get(path, func(c *fiber.Ctx) error {
+		h(NewFiberCtx(c))
+		return nil
+	})
 }
 
-func (r *GinRouter) PostEmoji(path string, h func(ctx *GinCtx)) {
-	r.emoji.POST(path, func(c *gin.Context) { h(NewGinCtx(c)) })
+func (r *FiberRouter) PostEmoji(path string, h func(ctx *FiberCtx)) {
+	r.emoji.Post(path, func(c *fiber.Ctx) error {
+		h(NewFiberCtx(c))
+		return nil
+	})
 }
 
-func (r *GinRouter) DeleteEmoji(path string, h func(ctx *GinCtx)) {
-	r.emoji.DELETE(path, func(c *gin.Context) { h(NewGinCtx(c)) })
+func (r *FiberRouter) DeleteEmoji(path string, h func(ctx *FiberCtx)) {
+	r.emoji.Delete(path, func(c *fiber.Ctx) error {
+		h(NewFiberCtx(c))
+		return nil
+	})
 }

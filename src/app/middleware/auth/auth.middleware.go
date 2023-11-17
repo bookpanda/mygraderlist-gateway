@@ -26,7 +26,7 @@ func NewAuthGuard(s auth.IService, e map[string]struct{}, conf config.App) Guard
 	}
 }
 
-func (m *Guard) Use(ctx *router.GinCtx) {
+func (m *Guard) Use(ctx *router.FiberCtx) {
 	m.isValidate = true
 
 	m.Validate(ctx)
@@ -39,7 +39,7 @@ func (m *Guard) Use(ctx *router.GinCtx) {
 
 }
 
-func (m *Guard) Validate(ctx *router.GinCtx) {
+func (m *Guard) Validate(ctx *router.FiberCtx) {
 	method := ctx.Method()
 	path := ctx.Path()
 

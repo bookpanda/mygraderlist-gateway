@@ -93,6 +93,7 @@ func (s *Service) Create(in *dto.EmojiDto) (*proto.Emoji, *dto.ResponseErr) {
 	defer cancel()
 
 	EmojiDto := &proto.Emoji{
+		Emoji:     in.Emoji,
 		ProblemId: in.ProblemID.String(),
 		UserId:    in.UserID.String(),
 	}

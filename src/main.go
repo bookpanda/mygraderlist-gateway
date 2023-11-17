@@ -107,7 +107,7 @@ func main() {
 
 	authGuard := guard.NewAuthGuard(authSrv, auth.ExcludePath, conf.App)
 
-	r := router.NewGinRouter(&authGuard)
+	r := router.NewFiberRouter(&authGuard, conf.App)
 
 	r.GetHealthCheck("/", hc.HealthCheck)
 
@@ -126,27 +126,23 @@ func main() {
 
 	r.GetProblem("/", problemHdr.FindAll)
 
-	r.GetLike("/mylikes", likeHdr.FindByUserId)
+	r.GetLike("/mylikes/", likeHdr.FindByUserId)
 	r.PostLike("/", likeHdr.Create)
-	r.DeleteLike("/:id", likeHdr.Create)
+	r.DeleteLike("/:id", likeHdr.Delete)
 
 	r.GetEmoji("/", emojiHdr.FindAll)
-	r.GetEmoji("/myemojis", emojiHdr.FindByUserId)
+	r.GetEmoji("/myemojis/", emojiHdr.FindByUserId)
 	r.PostEmoji("/", emojiHdr.Create)
-	r.DeleteEmoji("/:id", emojiHdr.Create)
+	r.DeleteEmoji("/:id", emojiHdr.Delete)
 
 	r.GetRating("/", ratingHdr.FindAll)
-	r.GetRating("/myratings", ratingHdr.FindByUserId)
+	r.GetRating("/myratings/", ratingHdr.FindByUserId)
 	r.PostRating("/", ratingHdr.Create)
-	r.DeleteRating("/:id", ratingHdr.Create)
-
-	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%v", conf.App.Port),
-		Handler: r,
-	}
+	r.PutRating("/:id", ratingHdr.Update)
+	r.DeleteRating("/:id", ratingHdr.Delete)
 
 	go func() {
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err := r.Listen(fmt.Sprintf(":%v", conf.App.Port)); err != nil && err != http.ErrServerClosed {
 			log.Fatal().
 				Err(err).
 				Str("service", "mgl-gateway").
@@ -156,7 +152,7 @@ func main() {
 
 	wait := gracefulShutdown(context.Background(), 2*time.Second, map[string]operation{
 		"server": func(ctx context.Context) error {
-			return srv.Shutdown(ctx)
+			return r.Shutdown()
 		},
 	})
 

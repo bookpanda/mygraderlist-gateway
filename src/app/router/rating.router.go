@@ -1,21 +1,31 @@
 package router
 
-import (
-	"github.com/gin-gonic/gin"
-)
+import "github.com/gofiber/fiber/v2"
 
-func (r *GinRouter) GetRating(path string, h func(ctx *GinCtx)) {
-	r.rating.GET(path, func(c *gin.Context) { h(NewGinCtx(c)) })
+func (r *FiberRouter) GetRating(path string, h func(ctx *FiberCtx)) {
+	r.rating.Get(path, func(c *fiber.Ctx) error {
+		h(NewFiberCtx(c))
+		return nil
+	})
 }
 
-func (r *GinRouter) PostRating(path string, h func(ctx *GinCtx)) {
-	r.rating.POST(path, func(c *gin.Context) { h(NewGinCtx(c)) })
+func (r *FiberRouter) PostRating(path string, h func(ctx *FiberCtx)) {
+	r.rating.Post(path, func(c *fiber.Ctx) error {
+		h(NewFiberCtx(c))
+		return nil
+	})
 }
 
-func (r *GinRouter) PutRating(path string, h func(ctx *GinCtx)) {
-	r.rating.PUT(path, func(c *gin.Context) { h(NewGinCtx(c)) })
+func (r *FiberRouter) PutRating(path string, h func(ctx *FiberCtx)) {
+	r.rating.Put(path, func(c *fiber.Ctx) error {
+		h(NewFiberCtx(c))
+		return nil
+	})
 }
 
-func (r *GinRouter) DeleteRating(path string, h func(ctx *GinCtx)) {
-	r.rating.DELETE(path, func(c *gin.Context) { h(NewGinCtx(c)) })
+func (r *FiberRouter) DeleteRating(path string, h func(ctx *FiberCtx)) {
+	r.rating.Delete(path, func(c *fiber.Ctx) error {
+		h(NewFiberCtx(c))
+		return nil
+	})
 }
