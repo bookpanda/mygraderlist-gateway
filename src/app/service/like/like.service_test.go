@@ -28,7 +28,7 @@ type LikeServiceTest struct {
 	ServiceDownErr *dto.ResponseErr
 }
 
-func TestGroupService(t *testing.T) {
+func TestLikeService(t *testing.T) {
 	suite.Run(t, new(LikeServiceTest))
 }
 

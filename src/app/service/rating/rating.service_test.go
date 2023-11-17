@@ -29,7 +29,7 @@ type RatingServiceTest struct {
 	ServiceDownErr  *dto.ResponseErr
 }
 
-func TestGroupService(t *testing.T) {
+func TestRatingService(t *testing.T) {
 	suite.Run(t, new(RatingServiceTest))
 }
 
@@ -203,8 +203,10 @@ func (t *RatingServiceTest) TestCreateSuccess() {
 	want := t.Rating
 
 	in := &proto.Rating{
-		ProblemId: t.RatingDto.ProblemID.String(),
-		UserId:    t.RatingDto.UserID.String(),
+		Score:      t.Rating.Score,
+		Difficulty: t.Rating.Difficulty,
+		ProblemId:  t.RatingDto.ProblemID.String(),
+		UserId:     t.RatingDto.UserID.String(),
 	}
 
 	c := &rating.ClientMock{}
@@ -221,8 +223,10 @@ func (t *RatingServiceTest) TestCreateGrpcErr() {
 	want := t.ServiceDownErr
 
 	in := &proto.Rating{
-		ProblemId: t.RatingDto.ProblemID.String(),
-		UserId:    t.RatingDto.UserID.String(),
+		Score:      t.Rating.Score,
+		Difficulty: t.Rating.Difficulty,
+		ProblemId:  t.RatingDto.ProblemID.String(),
+		UserId:     t.RatingDto.UserID.String(),
 	}
 
 	c := &rating.ClientMock{}

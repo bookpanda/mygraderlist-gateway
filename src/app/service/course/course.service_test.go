@@ -20,7 +20,7 @@ type CourseServiceTest struct {
 	ServiceDownErr *dto.ResponseErr
 }
 
-func TestGroupService(t *testing.T) {
+func TestCourseService(t *testing.T) {
 	suite.Run(t, new(CourseServiceTest))
 }
 
