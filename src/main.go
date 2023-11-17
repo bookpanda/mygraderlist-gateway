@@ -126,19 +126,19 @@ func main() {
 
 	r.GetProblem("/", problemHdr.FindAll)
 
-	r.GetLike("/mylikes", likeHdr.FindByUserId)
+	r.GetLike("/mylikes/", likeHdr.FindByUserId)
 	r.PostLike("/", likeHdr.Create)
-	r.DeleteLike("/:id", likeHdr.Create)
+	r.DeleteLike("/:id", likeHdr.Delete)
 
 	r.GetEmoji("/", emojiHdr.FindAll)
-	r.GetEmoji("/myemojis", emojiHdr.FindByUserId)
+	r.GetEmoji("/myemojis/", emojiHdr.FindByUserId)
 	r.PostEmoji("/", emojiHdr.Create)
-	r.DeleteEmoji("/:id", emojiHdr.Create)
+	r.DeleteEmoji("/:id", emojiHdr.Delete)
 
 	r.GetRating("/", ratingHdr.FindAll)
-	r.GetRating("/myratings", ratingHdr.FindByUserId)
+	r.GetRating("/myratings/", ratingHdr.FindByUserId)
 	r.PostRating("/", ratingHdr.Create)
-	r.DeleteRating("/:id", ratingHdr.Create)
+	r.DeleteRating("/:id", ratingHdr.Delete)
 
 	go func() {
 		if err := r.Listen(fmt.Sprintf(":%v", conf.App.Port)); err != nil && err != http.ErrServerClosed {

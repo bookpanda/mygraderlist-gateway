@@ -7,7 +7,6 @@ import (
 	"github.com/bookpanda/mygraderlist-gateway/src/app/router"
 	"github.com/bookpanda/mygraderlist-gateway/src/app/validator"
 	proto "github.com/bookpanda/mygraderlist-proto/MyGraderList/backend/like"
-	"github.com/gofiber/fiber/v2/log"
 )
 
 type Handler struct {
@@ -26,10 +25,8 @@ func NewHandler(service IService, validate *validator.DtoValidator) *Handler {
 }
 
 func (h *Handler) FindByUserId(c *router.FiberCtx) {
-	log.Debug("hello ", "\n")
 
 	userId := c.UserID()
-	log.Debug("user id ", userId, "\n")
 
 	result, errRes := h.service.FindByUserId(userId)
 	if errRes != nil {
@@ -37,7 +34,6 @@ func (h *Handler) FindByUserId(c *router.FiberCtx) {
 		return
 	}
 
-	log.Debug("likes ", result, "\n")
 	c.JSON(http.StatusOK, result)
 }
 
