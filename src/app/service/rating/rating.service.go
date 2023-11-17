@@ -93,8 +93,10 @@ func (s *Service) Create(in *dto.RatingDto) (*proto.Rating, *dto.ResponseErr) {
 	defer cancel()
 
 	ratingDto := &proto.Rating{
-		ProblemId: in.ProblemID.String(),
-		UserId:    in.UserID.String(),
+		Score:      int32(in.Score),
+		Difficulty: int32(in.Difficulty),
+		ProblemId:  in.ProblemID.String(),
+		UserId:     in.UserID.String(),
 	}
 
 	res, err := s.client.Create(ctx, &proto.CreateRatingRequest{Rating: ratingDto})
