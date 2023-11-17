@@ -34,12 +34,13 @@ services:
       - "3002:3002"
 
   local-db:
-    image: mysql:8.0.28-oracle
+    image: mysql:8.2.0-oracle
     container_name: local-db
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: mgl-db
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
     networks:
       - database
     volumes:
