@@ -91,6 +91,26 @@ func (c *ClientMock) RefreshToken(_ context.Context, in *auth_proto.RefreshToken
 	return res, args.Error(1)
 }
 
+func (c *ClientMock) GetGoogleLoginUrl(_ context.Context, in *auth_proto.GetGoogleLoginUrlRequest, _ ...grpc.CallOption) (res *auth_proto.GetGoogleLoginUrlResponse, err error) {
+	args := c.Called(in)
+
+	if args.Get(0) != nil {
+		res = args.Get(0).(*auth_proto.GetGoogleLoginUrlResponse)
+	}
+
+	return res, args.Error(1)
+}
+
+func (c *ClientMock) VerifyGoogleLogin(_ context.Context, in *auth_proto.VerifyGoogleLoginRequest, _ ...grpc.CallOption) (res *auth_proto.VerifyGoogleLoginResponse, err error) {
+	args := c.Called()
+
+	if args.Get(0) != nil {
+		res = args.Get(0).(*auth_proto.VerifyGoogleLoginResponse)
+	}
+
+	return res, args.Error(1)
+}
+
 type ServiceMock struct {
 	mock.Mock
 }
@@ -111,6 +131,34 @@ func (s *ServiceMock) Validate(token string) (payload *dto.TokenPayloadAuth, err
 
 func (s *ServiceMock) RefreshToken(token string) (credential *auth_proto.Credential, err *dto.ResponseErr) {
 	args := s.Called(token)
+
+	if args.Get(0) != nil {
+		credential = args.Get(0).(*auth_proto.Credential)
+	}
+
+	if args.Get(1) != nil {
+		err = args.Get(1).(*dto.ResponseErr)
+	}
+
+	return credential, err
+}
+
+func (s *ServiceMock) GetGoogleLoginUrl() (url string, err *dto.ResponseErr) {
+	args := s.Called()
+
+	if args.Get(0) != nil {
+		url = args.Get(0).(string)
+	}
+
+	if args.Get(1) != nil {
+		err = args.Get(1).(*dto.ResponseErr)
+	}
+
+	return url, err
+}
+
+func (s *ServiceMock) VerifyGoogleLogin(code string) (credential *auth_proto.Credential, err *dto.ResponseErr) {
+	args := s.Called()
 
 	if args.Get(0) != nil {
 		credential = args.Get(0).(*auth_proto.Credential)

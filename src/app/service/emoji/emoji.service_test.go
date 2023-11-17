@@ -28,7 +28,7 @@ type EmojiServiceTest struct {
 	ServiceDownErr *dto.ResponseErr
 }
 
-func TestGroupService(t *testing.T) {
+func TestEmojiService(t *testing.T) {
 	suite.Run(t, new(EmojiServiceTest))
 }
 
@@ -152,6 +152,7 @@ func (t *EmojiServiceTest) TestCreateSuccess() {
 	want := t.Emoji
 
 	in := &proto.Emoji{
+		Emoji:     t.EmojiDto.Emoji,
 		ProblemId: t.EmojiDto.ProblemID.String(),
 		UserId:    t.EmojiDto.UserID.String(),
 	}
@@ -170,6 +171,7 @@ func (t *EmojiServiceTest) TestCreateGrpcErr() {
 	want := t.ServiceDownErr
 
 	in := &proto.Emoji{
+		Emoji:     t.EmojiDto.Emoji,
 		ProblemId: t.EmojiDto.ProblemID.String(),
 		UserId:    t.EmojiDto.UserID.String(),
 	}
