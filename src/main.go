@@ -138,6 +138,7 @@ func main() {
 	r.GetRating("/", ratingHdr.FindAll)
 	r.GetRating("/myratings/", ratingHdr.FindByUserId)
 	r.PostRating("/", ratingHdr.Create)
+	r.PutRating("/:id", ratingHdr.Update)
 	r.DeleteRating("/:id", ratingHdr.Delete)
 
 	go func() {
