@@ -1,0 +1,15 @@
+database:
+  host: local-db
+  port: 3306
+  name: mgldb
+  username: root
+  password: root
+
+redis:
+  host: local-cache:6379
+  password: ""
+
+app:
+  port: 3003
+  debug: true
+  problem_cache_ttl: 5

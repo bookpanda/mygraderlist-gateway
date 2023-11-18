@@ -15,7 +15,7 @@ services:
     volumes:
       - ./service/local/backend:/app/config
     ports:
-      - "3001:3001"
+      - "3003:3003"
 
   local-auth:
     image: ghcr.io/bookpanda/mygraderlist-auth
@@ -39,7 +39,7 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: mgl-db
+      MYSQL_DATABASE: mgldb
     command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
     networks:
       - database
